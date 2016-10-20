@@ -1,0 +1,160 @@
+swagger: '2.0'
+
+info:
+  title: My APIs
+  version: 1.0.0
+
+schemes:
+#TODO Should be https when server configured correctly.
+  - http
+
+host: $(catalog.host)
+
+basePath: /v1
+
+consumes:
+  - application/json
+
+produces:
+  - application/json
+
+paths:
+  /queries:
+    get:
+      summary: Information about all known queries
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Query'
+
+  '/queries/{id}':
+    parameters:
+      - name: id
+        type: string
+        required: true
+        in: path
+        description: Query identifier
+
+    get:
+      summary: Information about a particular query.
+      description: The Queries endpoint returns information about the secure query known to the service.
+      parameters:
+        - name: id
+          type: string
+          required: true
+          in: path
+          description: Query identifier
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/Query'
+
+    put:
+      summary: Creates a new query.
+      description: Creates a new query resource with the given identifier.  The query can be run in future by simple reference to the identifier.
+      parameters:
+        - name: query_info
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Query'
+          description: The query being created
+      responses:
+        '201':
+          description: 201 Created
+
+    post:
+      summary: Runs the named query.
+      responses:
+        '200':
+          description: 200 OK
+
+
+definitions:
+#
+# Query : The instantiation of a query over the data.
+#
+  Query:
+    description: Represents a specific secure query.
+    properties:
+      id:
+        type: string
+        description: Unique identifier for the query.
+      query_schema:
+        description: "The Query's schema"
+        $ref: '#/definitions/QuerySchema'
+
+  #
+  # QuerySchema : describes the meta-data for a particular query.
+  #
+  QuerySchema:
+    description: The schema describing the query properties. See website for details of these properties.
+    properties:
+      name:
+        type: string
+        description: A unique schema name used to identify this query schema.
+      data_schema_name:
+        type: string
+        description: Name of the data schema over which this query is being run.
+      element_names:
+        type: array
+        items:
+          type: string
+        description: Names of the elements, described in the data schema, that will be returned in the query's response.
+      filter:
+        type: string
+        description: Fully-qualified name of the filter class to run.
+      filtered_fields:
+        type: array
+        items:
+          type: string
+        description: List of fields to pass through filter.
+    required: ['name', 'data_schema_name']
+
+  #
+  # DataSchema : the read-only meta-data for data that can be targeted by a query.
+  #
+  DataSchema:
+    description: The schema describing the queriable data. See website for details of these properties.
+    properties:
+      name:
+        type: string
+        description: A unique schema name used to identify this data schema.
+      element_names:
+        type: array
+        items:
+          type: string
+        description: Names of the elements, described in the data schema, that will be returned in the query's response.
+      filter:
+        type: string
+        description: Fully-qualified name of the filter class to run.
+      filtered_fields:
+        type: array
+        items:
+          type: string
+        description: List of fields to pass through filter.
+    required: ['name', 'element_names']
+    
+  #
+  # DataElement : the read-only meta-data for an element of the queryable data set.
+  #
+  DataElement:
+    description: A particular element in the data set being queried.
+    properties:
+      name:
+        type: string
+        description: The data element name, used to uniquely identify this element in the data set.
+      data_type:
+        type: string
+        description: The fully-qualified class name, or primitive type name, of the data element.
+      is_array:
+        type: boolean
+        description: Flag indicating if the element is an array of the given data_types.  Defaults to false if unspecified.
+      partitioner:
+        type: string
+        description: Fully-qualified name of the partitioner class to use for this type of data element.
+    required: ['name', 'data_type']
