@@ -1,0 +1,220 @@
+swagger: '2.0'
+
+info:
+  title: PIR query APIs
+  version: 1.0.0
+
+schemes:
+#TODO Should be https when server configured correctly.
+  - http
+
+#TODO Should be updated to hostname
+host: localhost
+
+basePath: /v1
+
+consumes:
+  - application/json
+
+produces:
+  - application/json
+
+paths:
+  #
+  # Operations applicable to the full query set.
+  #
+  /queries:
+    get:
+      summary: Answers information about all known queries
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Query'
+
+  #
+  # Operations relating to a particular query.
+  #
+  /queries/{id}:
+    parameters:
+      - name: id
+        type: string
+        required: true
+        in: path
+        description: Query identifier
+
+    get:
+      summary: Information about a particular query.
+      description: The Queries endpoint returns information about the secure query known to the service.
+      parameters:
+        - name: id
+          type: string
+          required: true
+          in: path
+          description: Query identifier
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            $ref: '#/definitions/Query'
+
+    put:
+      summary: Creates a new query.
+      description: Creates a new query resource with the given identifier.
+        The query can be used in future by reference to the identifier.
+      parameters:
+        - name: query_info
+          required: true
+          in: body
+          schema:
+            $ref: '#/definitions/Query'
+          description: The query being created
+      responses:
+        '201':
+          description: 201 Created
+
+    post:
+      summary: Runs the named query.
+      responses:
+        '200':
+          description: 200 OK
+
+  #
+  # Operations applicable to the full data schema set.
+  #
+  /data_schemas:
+    get:
+      summary: Answers information about all known queryable data schema names.
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DataSchema'
+
+  #
+  # Operations applicable to a particular data schema.
+  #
+  /data_schemas/{id}:
+    parameters:
+      - name: id
+        type: string
+        required: true
+        in: path
+        description: Data schema identifier
+
+    get:
+      summary: Answers information about the named data schema.
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/DataSchema'
+        '404':
+          description: A data schema with the given identifier is not available on this server.
+
+definitions:
+  #
+  # Query : The instantiation of a specific query over the data.
+  #
+  Query:
+    description: Represents a specific secure query.
+    properties:
+      id:
+        description: Unique identifier for this query.
+        type: string
+      num_selectors:
+        description: The number of element selectors used in this query.
+        type: integer
+        format: int32
+      hash_bit_size:
+        description: The number of bits produced by the key hashing function.
+        type: integer
+        format: int32
+      hash_key:
+        description: A starting key for the hash function.
+        type: string
+      num_bits_per_data_element:
+        type: integer
+        format: int32
+      data_partition_bit_size:
+        type: integer
+        format: int32
+      numPartitionsPerDataElement:
+        type: integer
+        format: int32
+      N:
+        description: The RSA modulus value.
+        type: string
+      query_schema:
+        $ref: '#/definitions/QuerySchema'
+      query_elements:
+        description: The encrypted selector mappings.
+        type: array
+        items:
+          type: string
+
+  #
+  # QuerySchema : describes the meta-data for a particular type of query.
+  #
+  QuerySchema:
+    description: The schema describing the query properties. See website for details of these properties.
+    properties:
+      name:
+        type: string
+        description: A unique schema name used to identify this query schema.
+      data_schema_name:
+        type: string
+        description: Name of the data schema over which this query is being run.
+      element_names:
+        type: array
+        items:
+          type: string
+        description: Names of the elements, described in the data schema, that will be returned in the query's response.
+      filter:
+        type: string
+        description: Fully-qualified name of the filter class to run.
+      filtered_fields:
+        type: array
+        items:
+          type: string
+        description: List of fields to pass through filter.
+    required: [name, data_schema_name]
+
+  #
+  # DataSchema : the read-only meta-data for data that can be targeted by a query.
+  #
+  DataSchema:
+    description: The schema describing the queriable data. See website for details of these properties.
+    properties:
+      name:
+        description: A unique schema name used to identify this data schema.
+        type: string
+      elements:
+        description: The set of elements in the data that are available for querying.
+        type: array
+        items:
+          description: A particular element in the data set being queried.
+          properties:
+            name:
+              description: The data element name, used to uniquely identify this
+                element in the data set.
+              type: string
+            data_type:
+              description: The fully-qualified class name, or primitive type name,
+                of the data element.
+              type: string
+            is_array:
+              description: Flag indicating if the element is an array of the given
+                data_types.
+              type: boolean
+          required: [name, data_type, is_array]
+    required: [name, elements]
+    
+#
+# TODO
+# - Define error cases for each API.
+#
