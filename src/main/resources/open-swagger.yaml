@@ -1,14 +1,19 @@
+#
+# Example, assuming no PIR!
+#
+
 swagger: '2.0'
 
 info:
-  title: My APIs
+  title: PIR query APIs
   version: 1.0.0
 
 schemes:
 #TODO Should be https when server configured correctly.
   - http
 
-host: $(catalog.host)
+#TODO Should be updated to hostname
+host: localhost
 
 basePath: /v1
 
@@ -19,9 +24,12 @@ produces:
   - application/json
 
 paths:
+  #
+  # Operations applicable to the full query set.
+  #
   /queries:
     get:
-      summary: Information about all known queries
+      summary: Answers information about all known queries
       responses:
         '200':
           description: 200 OK
@@ -30,6 +38,9 @@ paths:
             items:
               $ref: '#/definitions/Query'
 
+  #
+  # Operations relating to a particular query.
+  #
   '/queries/{id}':
     parameters:
       - name: id
@@ -55,7 +66,8 @@ paths:
 
     put:
       summary: Creates a new query.
-      description: Creates a new query resource with the given identifier.  The query can be run in future by simple reference to the identifier.
+      description: Creates a new query resource with the given identifier.
+        The query can be used in future by reference to the identifier.
       parameters:
         - name: query_info
           required: true
@@ -73,10 +85,24 @@ paths:
         '200':
           description: 200 OK
 
+  #
+  # Operations applicable to the full data schema set.
+  #
+  /data_schemas:
+    get:
+      summary: Answers information about all known data schemas.
+      responses:
+        '200':
+          description: 200 OK
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/DataSchema'
+
 
 definitions:
 #
-# Query : The instantiation of a query over the data.
+# Query : The instantiation of a specific query over the data.
 #
   Query:
     description: Represents a specific secure query.
@@ -85,11 +111,10 @@ definitions:
         type: string
         description: Unique identifier for the query.
       query_schema:
-        description: "The Query's schema"
         $ref: '#/definitions/QuerySchema'
 
   #
-  # QuerySchema : describes the meta-data for a particular query.
+  # QuerySchema : describes the meta-data for a particular type of query.
   #
   QuerySchema:
     description: The schema describing the query properties. See website for details of these properties.
@@ -113,7 +138,7 @@ definitions:
         items:
           type: string
         description: List of fields to pass through filter.
-    required: ['name', 'data_schema_name']
+    required: [name, data_schema_name]
 
   #
   # DataSchema : the read-only meta-data for data that can be targeted by a query.
@@ -124,37 +149,37 @@ definitions:
       name:
         type: string
         description: A unique schema name used to identify this data schema.
-      element_names:
+      elements:
         type: array
         items:
-          type: string
-        description: Names of the elements, described in the data schema, that will be returned in the query's response.
-      filter:
-        type: string
-        description: Fully-qualified name of the filter class to run.
-      filtered_fields:
-        type: array
-        items:
-          type: string
-        description: List of fields to pass through filter.
-    required: ['name', 'element_names']
+          $ref: '#/definitions/DataElement'
+        description: The set of elements in the data that are available for querying.
+    required: [name, elements]
     
   #
   # DataElement : the read-only meta-data for an element of the queryable data set.
+  #
+  # Note that the partitioner only makes sense when defining the data element, so no
+  # need to return it on a read-only request.
   #
   DataElement:
     description: A particular element in the data set being queried.
     properties:
       name:
         type: string
-        description: The data element name, used to uniquely identify this element in the data set.
+        description: The data element name, used to uniquely identify this
+          element in the data set.
       data_type:
         type: string
-        description: The fully-qualified class name, or primitive type name, of the data element.
+        description: The fully-qualified class name, or primitive type name,
+          of the data element.
       is_array:
         type: boolean
-        description: Flag indicating if the element is an array of the given data_types.  Defaults to false if unspecified.
-      partitioner:
-        type: string
-        description: Fully-qualified name of the partitioner class to use for this type of data element.
-    required: ['name', 'data_type']
+        description: Flag indicating if the element is an array of the given
+          data_types.
+    required: [name, data_type, is_array]
+    
+#
+# TODO
+# - Define error cases for each API.
+#
