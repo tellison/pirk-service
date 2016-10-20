@@ -25,14 +25,15 @@ paths:
   #
   /queries:
     get:
-      summary: Answers information about all known queries
+      summary: Answers identifers of all known queries.
       responses:
         '200':
           description: 200 OK
           schema:
             type: array
             items:
-              $ref: '#/definitions/Query'
+              description: The identifier of a stored query.
+              type: string
 
   #
   # Operations relating to a particular query.
@@ -47,13 +48,7 @@ paths:
 
     get:
       summary: Information about a particular query.
-      description: The Queries endpoint returns information about the secure query known to the service.
-      parameters:
-        - name: id
-          type: string
-          required: true
-          in: path
-          description: Query identifier
+      description: Returns information about the given secure query known to the service.
       responses:
         '200':
           description: 200 OK
@@ -65,15 +60,17 @@ paths:
       description: Creates a new query resource with the given identifier.
         The query can be used in future by reference to the identifier.
       parameters:
-        - name: query_info
+        - name: query
           required: true
           in: body
           schema:
             $ref: '#/definitions/Query'
-          description: The query being created
+          description: The query being created.
       responses:
         '201':
-          description: 201 Created
+          description: 201 Created.  The query was created successfully.
+        '400':
+          description: 400 Bad Request.  The query data is invalid, and the query was not created.
 
     post:
       summary: Runs the named query.
@@ -143,10 +140,10 @@ definitions:
       data_partition_bit_size:
         type: integer
         format: int32
-      numPartitionsPerDataElement:
+      num_partitions_per_data_element:
         type: integer
         format: int32
-      N:
+      modulus:
         description: The RSA modulus value.
         type: string
       query_schema:
@@ -181,7 +178,7 @@ definitions:
         type: array
         items:
           type: string
-        description: List of fields to pass through filter.
+        description: List of fields to pass through the filter.
     required: [name, data_schema_name]
 
   #
@@ -216,5 +213,5 @@ definitions:
     
 #
 # TODO
-# - Define error cases for each API.
+# - Define error responses for each API.
 #
