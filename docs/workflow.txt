@@ -7,14 +7,43 @@ Request:
   
 Response:
   200 OK - and a possibly empty array of data schema names in body
-  
+
+
+curl -i http://localhost:8080/v1/data_schemas
+
+[
+  "Simple Data Schema 1"
+]
+
 ==================
 
 2. Get a particular data schema
 
 Request:
   GET /v1/data_schemas/{name}
+  
+curl -i  http://localhost:8080/v1/data_schemas/Simple+Data+Schema+1
 
+{
+  "name":"Simple Data Schema 1",
+  "elements": [
+    {
+      "name":"children",
+      "dataType":"string",
+      "isArray":true
+    },
+    {
+      "name":"name",
+      "dataType":"string",
+      "isArray":false
+    },
+    {
+      "name":"age",
+      "dataType":"int",
+      "isArray":false
+    }
+  ]
+}
 ==================
 
 
@@ -51,6 +80,7 @@ Request:
 Response:
   201 Created - and a URL to the query
   
+curl -X PUT --data-binary @filename http://
 
 ==================
 
