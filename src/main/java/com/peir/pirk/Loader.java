@@ -9,11 +9,14 @@ import org.apache.pirk.schema.data.DataSchemaLoader;
 import org.apache.pirk.schema.data.DataSchemaRegistry;
 import org.apache.pirk.utils.PIRException;
 
+/*
+ * Sample data for debugging and testing.
+ */
 class Loader {
-    
+
     public Loader() {
     }
-    
+
     public void loadTestData() {
         loadDataSchemas();
     }
@@ -31,7 +34,7 @@ class Loader {
         sb.append("</schema> ");
         String xml = sb.toString();
         InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8));
-        
+
         try {
             DataSchemaRegistry.put(new DataSchemaLoader().loadSchema(stream));
         } catch (IOException | PIRException e) {

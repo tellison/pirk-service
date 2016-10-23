@@ -6,7 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.pirk.encryption.Paillier;
 import org.apache.pirk.schema.data.DataSchemaRegistry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.swagger.model.DataSchema;
 import io.swagger.model.DataSchemaElements;
@@ -14,6 +17,8 @@ import io.swagger.model.Query;
 import io.swagger.model.QuerySchema;
 
 class RestHandler {
+
+    private static final Logger logger = LoggerFactory.getLogger(RestHandler.class);
 
     private static Map<String, Query> store = new HashMap<>();
 
@@ -44,19 +49,26 @@ class RestHandler {
     }
 
     // Get all known data schema names as a sorted list.
-    List<String> getDataSchemaNames() {
+    public List<String> getDataSchemaNames() {
+        logger.debug("Getting sorted schema names");
         List<String> list = new ArrayList<>(DataSchemaRegistry.getNames());
         Collections.sort(list);
         return list;
     }
 
-    // Convert Pirk data schema with given id to a Swagger data schema.
+    /*
+     * Gets a data schema with given id as a Swagger data schema. Returns null
+     * if not found
+     */
     public DataSchema getDataSchema(String id) {
-        DataSchema swaggerSchema = new DataSchema();
+        // Look up the Pirk data schema.
         org.apache.pirk.schema.data.DataSchema pirkSchema = DataSchemaRegistry.get(id);
+        logger.debug("Looking up schema name {} returns {}", id, pirkSchema);
+        if (pirkSchema == null) {
+            return null;
+        }
 
-        System.out.println("Looking up schema name : " + id);
-
+        DataSchema swaggerSchema = new DataSchema();
         swaggerSchema.setName(pirkSchema.getSchemaName());
 
         List<DataSchemaElements> elements = new ArrayList<>();
