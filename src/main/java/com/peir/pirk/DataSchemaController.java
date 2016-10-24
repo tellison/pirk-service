@@ -15,11 +15,11 @@ import io.swagger.model.DataSchema;
 /* A controller for the API impl.
  * Handles incoming translation to Model concepts and translating model replies back to REST responses.
  */
-public class DSController {
+public class DataSchemaController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DSController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSchemaController.class);
 
-    static RestHandler handler = new RestHandler();
+    static DataSchemaOperations handler = new DataSchemaOperations();
 
     static {
         new Loader().loadTestData();

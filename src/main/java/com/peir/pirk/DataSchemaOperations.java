@@ -2,50 +2,25 @@ package com.peir.pirk;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.pirk.encryption.Paillier;
 import org.apache.pirk.schema.data.DataSchemaRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.swagger.model.DataSchema;
 import io.swagger.model.DataSchemaElements;
-import io.swagger.model.Query;
-import io.swagger.model.QuerySchema;
 
-class RestHandler {
+/*
+ * Assumes all URL encoding/decoding has been done on inputs, and will be done on return values.
+ * Throws exceptions to indicate errors, and lets caller map to response.
+ */
+class DataSchemaOperations {
 
-    private static final Logger logger = LoggerFactory.getLogger(RestHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSchemaOperations.class);
 
-    private static Map<String, Query> store = new HashMap<>();
-
-    private static Query q = new Query();
-    private static QuerySchema qs = new QuerySchema();
-
-    static {
-        qs.setName("query schema name");
-
-        q.setId("42");
-        q.setQuerySchema(qs);
-
-        store.put("1", q);
-    }
-
-    public RestHandler() {
+    public DataSchemaOperations() {
         // Default
-    }
-
-    // Stores a query defined by the user
-    static Query putQuery(String id, Query queryInfo) {
-        store.put(id, queryInfo);
-        return queryInfo;
-    }
-
-    static Query getQuery(String id) {
-        return store.get(id);
     }
 
     // Get all known data schema names as a sorted list.
