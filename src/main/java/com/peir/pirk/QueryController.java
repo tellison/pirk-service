@@ -24,9 +24,9 @@ public class QueryController {
 
     private static final Logger logger = LoggerFactory.getLogger(QueryController.class);
 
-    //FIXME: temp store
+    // FIXME: temp store
     static Map<String, Query> store = new HashMap<>();
-    
+
     // PUT /v1/queries/{id}
     public static Response queriesIdPut(String id, io.swagger.model.Query query) {
         logger.info("queriesIdPut");
@@ -37,8 +37,8 @@ public class QueryController {
 
         Query pirkQuery;
         try {
-          pirkQuery =  buildPirkQuery(query);
-          store.put(query.getId(), pirkQuery);
+            pirkQuery = buildPirkQuery(query);
+            store.put(query.getId(), pirkQuery);
         } catch (PIRException e) {
             e.printStackTrace();
         }
@@ -61,14 +61,10 @@ public class QueryController {
         }
 
         // Build a PIR query info object.
-        QueryInfo queryInfo = new QueryInfo(
-            UUID.fromString(query.getId()), 
-            query.getNumSelectors(), 
-            query.getHashBitSize(),
-            query.getHashKey(),
-            query.getDataPartitionBitSize(),
-            pirkSchema.getSchemaName(), true, false, false);
-        
+        QueryInfo queryInfo = new QueryInfo(UUID.fromString(query.getId()), query.getNumSelectors(),
+                query.getHashBitSize(), query.getHashKey(), query.getDataPartitionBitSize(), pirkSchema.getSchemaName(),
+                true, false, false);
+
         return new Query(queryInfo, modulus, queryElements);
     }
 
@@ -84,12 +80,15 @@ public class QueryController {
             schemaBuilder.setDataSchemaName(swaggerSchema.getDataSchemaName());
             schemaBuilder.setQueryElementNames(new HashSet<String>(swaggerSchema.getElementNames()));
             schemaBuilder.setSelectorName(swaggerSchema.getPrimarySelector());
-            schemaBuilder.setFilterTypeName(swaggerSchema.getFilter());
+            if (swaggerSchema.getFilter() != null) {
+                schemaBuilder.setFilterTypeName(swaggerSchema.getFilter());
+            }
             try {
                 pirkSchema = schemaBuilder.build();
             } catch (IOException e) {
                 throw new PIRException(e.getLocalizedMessage());
             }
+            QuerySchemaRegistry.put(pirkSchema);
         }
         return pirkSchema;
     }

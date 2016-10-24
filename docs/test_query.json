@@ -1,5 +1,5 @@
 {
-  "id": "123",
+  "id": "e0115ec3-9b0b-43d8-bb92-c9f66d1ea023",
   "numSelectors": 2,
   "hashBitSize": 12,
   "hashKey": "Foobar",
@@ -8,15 +8,12 @@
   "numPartitionsPerDataElement": 12,
   "modulus": "30049399560646469676005493659082752898785212655599017144565972358099446280042588990477674146012309524890531874672789",
   "querySchema": {
+  	"name": "My query schema 1",
     "dataSchemaName": "Simple Data Schema 1",
     "primarySelector" : "name",
     "elementNames": [
       "name",
       "age"
-    ],
-    "filter": "com.example.Foo",
-    "filteredFields": [
-      "filtered_field"
     ]
   },
   "queryElements": [
