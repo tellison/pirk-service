@@ -166,6 +166,9 @@ definitions:
       data_schema_name:
         type: string
         description: Name of the data schema over which this query is being run.
+      primary_selector:
+        type: string
+        description: Name of the element in the data schema acting as the indicator for the query.
       element_names:
         type: array
         items:
@@ -179,7 +182,7 @@ definitions:
         items:
           type: string
         description: List of fields to pass through the filter.
-    required: [name, data_schema_name]
+    required: [name, data_schema_name, primary_selector]
 
   #
   # DataSchema : the read-only meta-data for data that can be targeted by a query.

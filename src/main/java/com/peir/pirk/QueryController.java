@@ -1,6 +1,7 @@
 package com.peir.pirk;
 
 import java.math.BigInteger;
+import java.util.HashSet;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -8,11 +9,12 @@ import java.util.UUID;
 import javax.ws.rs.core.Response;
 
 import org.apache.pirk.query.wideskies.QueryInfo;
+import org.apache.pirk.schema.query.QuerySchema;
 import org.apache.pirk.schema.query.filter.DataFilter;
+import org.apache.pirk.schema.query.filter.FilterFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.swagger.api.ApiException;
 import io.swagger.model.Query;
 
 public class QueryController {
@@ -27,11 +29,19 @@ public class QueryController {
 
         /* Construct a Pirk query from incoming swagger model query. */
 
+        //TODO: shift all this schema building into the core pirk capability
+        
+        DataFilter filter = FilterFactory.getFilter(query.getQuerySchema().getFilter(), new HashSet<String>(query.getQuerySchema().getFilteredFields()));
+        //FIXME: Should be computed from data elements 
+        int dataElementSize = 0;
         // Query schema
         QuerySchema qs = new QuerySchema(
             query.getQuerySchema().getName(),
             query.getQuerySchema().getDataSchemaName(),
-            query.getQuerySchema().get selectorName, String filterTypeName, DataFilter filter, int dataElementSize)
+            query.getQuerySchema().getPrimarySelector(),
+            query.getQuerySchema().getFilter(),
+            filter,
+            dataElementSize);
         
         
         // RSA modulus
