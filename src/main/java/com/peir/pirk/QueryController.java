@@ -3,7 +3,7 @@ package com.peir.pirk;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -82,7 +82,7 @@ public class QueryController {
             QuerySchemaBuilder schemaBuilder = new QuerySchemaBuilder();
             schemaBuilder.setName(swaggerSchema.getName());
             schemaBuilder.setDataSchemaName(swaggerSchema.getDataSchemaName());
-            schemaBuilder.setQueryElements(new LinkedHashSet<String>(swaggerSchema.getElementNames()));
+            schemaBuilder.setQueryElementNames(new HashSet<String>(swaggerSchema.getElementNames()));
             schemaBuilder.setSelectorName(swaggerSchema.getPrimarySelector());
             schemaBuilder.setFilterTypeName(swaggerSchema.getFilter());
             try {
