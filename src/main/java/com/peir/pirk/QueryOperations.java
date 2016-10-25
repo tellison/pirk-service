@@ -2,12 +2,15 @@ package com.peir.pirk;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.apache.pirk.query.wideskies.Query;
 import org.apache.pirk.query.wideskies.QueryInfo;
@@ -88,10 +91,51 @@ public class QueryOperations {
         return pirkSchema;
     }
 
+    /*
+     * Returns a stored Pirk query as a swagger model query.
+     * Answers null if there is no such query.
+     */
+    public io.swagger.model.Query retrieveQuery(String id) {
+        Query pirkQuery = store.get(id);
+        if (pirkQuery == null) {
+            return null;
+        }
+        QueryInfo queryInfo = pirkQuery.getQueryInfo();
+        io.swagger.model.Query swaggerQuery = new io.swagger.model.Query();
+        swaggerQuery.setId(queryInfo.getIdentifier().toString());
+        swaggerQuery.setNumSelectors(queryInfo.getNumSelectors());
+        swaggerQuery.setHashBitSize(queryInfo.getHashBitSize());
+        swaggerQuery.setHashKey(queryInfo.getHashKey());
+        swaggerQuery.setNumBitsPerDataElement(queryInfo.getNumBitsPerDataElement());
+        swaggerQuery.setDataPartitionBitSize(queryInfo.getDataPartitionBitSize());
+        swaggerQuery.setNumPartitionsPerDataElement(queryInfo.getNumPartitionsPerDataElement());
+        swaggerQuery.setModulus(toString(pirkQuery.getN()));
+        
+        QuerySchema pirkSchema = QuerySchemaRegistry.get(queryInfo.getQueryType());
+        io.swagger.model.QuerySchema swaggerSchema = new io.swagger.model.QuerySchema();
+        swaggerQuery.setQuerySchema(swaggerSchema);
+        
+        swaggerSchema.setName(pirkSchema.getSchemaName());
+        swaggerSchema.setDataSchemaName(pirkSchema.getDataSchemaName());
+        swaggerSchema.setPrimarySelector(pirkSchema.getSelectorName());
+        swaggerSchema.setElementNames(pirkSchema.getElementNames());
+        swaggerSchema.setFilter(pirkSchema.getFilterTypeName());
+        swaggerSchema.setFilteredFields(new ArrayList<String>(pirkSchema.getFilteredElementNames()));
+       
+        List<String> queryElements = pirkQuery.getQueryElements().values().stream().map(b->toString(b)).collect(Collectors.toList());
+        swaggerQuery.setQueryElements(queryElements);
+        
+        return swaggerQuery;
+    }
+    
+    private String toString(BigInteger n) {
+       return n.toString(Character.MAX_RADIX);
+    }
+    
     private BigInteger parseBigInteger(String modulusString) {
         try {
-            // TODO return new BigInteger(modulusString, Character.MAX_RADIX);
-            return new BigInteger(modulusString);
+            return new BigInteger(modulusString, Character.MAX_RADIX);
+            //return new BigInteger(modulusString);
         } catch (NumberFormatException e) {
             // TODO throw new ApiException(400, e.getLocalizedMessage());
             return BigInteger.ZERO;

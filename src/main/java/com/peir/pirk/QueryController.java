@@ -6,6 +6,8 @@ import org.apache.pirk.utils.PIRException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.swagger.model.Query;
+
 /* A controller for the query and query API impl.
  * Handles incoming translation to Model concepts and translating model replies back to REST responses.
  */
@@ -30,6 +32,22 @@ public class QueryController {
         }
 
         return Response.ok(query.getId()).build();
+    }
+
+    // GET /v1/queries/{id}
+    public static Response queriesIdGet(String id) {
+        logger.info("queriesIdGet");
+
+        if (id == null) {
+            return errorResponse("ID of URL is null", null);
+        }
+
+        Query query = handler.retrieveQuery(id);
+        if (query == null) {
+            return errorResponse("No such query", null);
+        }
+
+        return Response.ok(query).build();
     }
 
     private static Response errorResponse(String message, Exception e) {
