@@ -131,9 +131,6 @@ definitions:
         description: The number of bits produced by the key hashing function.
         type: integer
         format: int32
-      hash_key:
-        description: A starting key for the hash function.
-        type: string
       num_bits_per_data_element:
         type: integer
         format: int32

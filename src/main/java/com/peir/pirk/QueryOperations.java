@@ -60,7 +60,7 @@ public class QueryOperations {
 
         // Build a PIR query info object.
         QueryInfo queryInfo = new QueryInfo(UUID.fromString(query.getId()), query.getNumSelectors(),
-                query.getHashBitSize(), query.getHashKey(), query.getDataPartitionBitSize(), pirkSchema.getSchemaName(),
+                query.getHashBitSize(), query.getDataPartitionBitSize(), pirkSchema.getSchemaName(),
                 true, false, false);
 
         return new Query(queryInfo, modulus, queryElements);
@@ -100,16 +100,16 @@ public class QueryOperations {
         if (pirkQuery == null) {
             return null;
         }
+        
         QueryInfo queryInfo = pirkQuery.getQueryInfo();
         io.swagger.model.Query swaggerQuery = new io.swagger.model.Query();
         swaggerQuery.setId(queryInfo.getIdentifier().toString());
         swaggerQuery.setNumSelectors(queryInfo.getNumSelectors());
         swaggerQuery.setHashBitSize(queryInfo.getHashBitSize());
-        swaggerQuery.setHashKey(queryInfo.getHashKey());
         swaggerQuery.setNumBitsPerDataElement(queryInfo.getNumBitsPerDataElement());
         swaggerQuery.setDataPartitionBitSize(queryInfo.getDataPartitionBitSize());
         swaggerQuery.setNumPartitionsPerDataElement(queryInfo.getNumPartitionsPerDataElement());
-        swaggerQuery.setModulus(toString(pirkQuery.getN()));
+        swaggerQuery.setModulus(pirkQuery.getN().toString(Character.MAX_RADIX));
         
         QuerySchema pirkSchema = QuerySchemaRegistry.get(queryInfo.getQueryType());
         io.swagger.model.QuerySchema swaggerSchema = new io.swagger.model.QuerySchema();
@@ -122,20 +122,17 @@ public class QueryOperations {
         swaggerSchema.setFilter(pirkSchema.getFilterTypeName());
         swaggerSchema.setFilteredFields(new ArrayList<String>(pirkSchema.getFilteredElementNames()));
        
-        List<String> queryElements = pirkQuery.getQueryElements().values().stream().map(b->toString(b)).collect(Collectors.toList());
+        List<String> queryElements = pirkQuery.getQueryElements().values().stream()
+                .map(n -> n.toString(Character.MAX_RADIX))
+                .collect(Collectors.toList());
         swaggerQuery.setQueryElements(queryElements);
-        
+  
         return swaggerQuery;
-    }
-    
-    private String toString(BigInteger n) {
-       return n.toString(Character.MAX_RADIX);
     }
     
     private BigInteger parseBigInteger(String modulusString) {
         try {
             return new BigInteger(modulusString, Character.MAX_RADIX);
-            //return new BigInteger(modulusString);
         } catch (NumberFormatException e) {
             // TODO throw new ApiException(400, e.getLocalizedMessage());
             return BigInteger.ZERO;
