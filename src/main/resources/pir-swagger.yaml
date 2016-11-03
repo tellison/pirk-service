@@ -32,8 +32,9 @@ paths:
           schema:
             type: array
             items:
-              description: The identifier of a stored query.
+              description: The identifier of an individual stored query.
               type: string
+            description: The array of query identifiers.
 
   #
   # Operations relating to a particular query.
@@ -74,28 +75,36 @@ paths:
 
     post:
       summary: Runs the named query.
+      parameters:
+        - name: data_set
+          in: header
+          description: The URI of the data over which this query will be executed.
+          required: true
+          type: string
       responses:
         '200':
           description: 200 OK
 
   #
-  # Operations applicable to the full data schema set.
+  # Operations applicable to the collection of data sets.
   #
-  /data_schemas:
+  /data_sets:
     get:
-      summary: Answers information about all known queryable data schema names.
+      summary: Answers information about all known queryable data sets.
       responses:
         '200':
           description: 200 OK
           schema:
             type: array
             items:
-              $ref: '#/definitions/DataSchema'
+              description: The identifier of an individual data set.
+              type: string
+            description: The array of data set identifiers.
 
   #
-  # Operations applicable to a particular data schema.
+  # Operations applicable to a particular data set.
   #
-  /data_schemas/{id}:
+  /data_sets/{id}/schema:
     parameters:
       - name: id
         type: string
@@ -111,7 +120,7 @@ paths:
           schema:
             $ref: '#/definitions/DataSchema'
         '404':
-          description: A data schema with the given identifier is not available on this server.
+          description: A data schema for the data set with the given identifier is not available on this server.
 
 definitions:
   #
@@ -155,7 +164,7 @@ definitions:
   # QuerySchema : describes the meta-data for a particular type of query.
   #
   QuerySchema:
-    description: The schema describing the query properties. See website for details of these properties.
+    description: Properties of the query. See website for details of these properties.
     properties:
       name:
         type: string
@@ -183,6 +192,7 @@ definitions:
 
   #
   # DataSchema : the read-only meta-data for data that can be targeted by a query.
+  #              A poor man's RDF.
   #
   DataSchema:
     description: The schema describing the queriable data. See website for details of these properties.

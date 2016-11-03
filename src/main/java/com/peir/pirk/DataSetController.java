@@ -15,20 +15,16 @@ import io.swagger.model.DataSchema;
 /* A controller for the API impl.
  * Handles incoming translation to Model concepts and translating model replies back to REST responses.
  */
-public class DataSchemaController {
+public class DataSetController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataSchemaController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSetController.class);
 
-    static DataSchemaOperations handler = new DataSchemaOperations();
-
-    static {
-        new Loader().loadTestData();
-    }
+    static DataSetOperations handler = new DataSetOperations(new DataSetLoader());
 
     // GET /v1/data_schemas
     public static Response dataSchemasGet() {
         logger.info("dataSchemasGet");
-        List<String> names = handler.getDataSchemaNames();
+        List<String> names = handler.getDataSetNames();
         return Response.ok(names).build();
     }
 

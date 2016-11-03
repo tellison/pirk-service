@@ -3,6 +3,7 @@ package com.peir.pirk;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,17 @@ public class QueryOperations {
     static Map<String, Query> store = new HashMap<>();
 
     /*
+     * Returns a sorted list of stored query names.
+     */
+    public List<String> storedQueryNames() {
+        logger.info("listing stored queries");
+
+        List<String> names = new ArrayList<String>(store.keySet());
+        Collections.sort(names);
+        return names;
+    }
+
+    /*
      * Construct a Pirk query from incoming swagger model query, and store it.
      */
     public Query storeQuery(String id, io.swagger.model.Query query) throws PIRException {
@@ -60,8 +72,8 @@ public class QueryOperations {
 
         // Build a PIR query info object.
         QueryInfo queryInfo = new QueryInfo(UUID.fromString(query.getId()), query.getNumSelectors(),
-                query.getHashBitSize(), query.getDataPartitionBitSize(), pirkSchema.getSchemaName(),
-                true, false, false);
+                query.getHashBitSize(), query.getDataPartitionBitSize(), pirkSchema.getSchemaName(), true, false,
+                false);
 
         return new Query(queryInfo, modulus, queryElements);
     }
@@ -92,15 +104,15 @@ public class QueryOperations {
     }
 
     /*
-     * Returns a stored Pirk query as a swagger model query.
-     * Answers null if there is no such query.
+     * Returns a stored Pirk query as a swagger model query. Answers null if
+     * there is no such query.
      */
     public io.swagger.model.Query retrieveQuery(String id) {
         Query pirkQuery = store.get(id);
         if (pirkQuery == null) {
             return null;
         }
-        
+
         QueryInfo queryInfo = pirkQuery.getQueryInfo();
         io.swagger.model.Query swaggerQuery = new io.swagger.model.Query();
         swaggerQuery.setId(queryInfo.getIdentifier().toString());
@@ -110,26 +122,25 @@ public class QueryOperations {
         swaggerQuery.setDataPartitionBitSize(queryInfo.getDataPartitionBitSize());
         swaggerQuery.setNumPartitionsPerDataElement(queryInfo.getNumPartitionsPerDataElement());
         swaggerQuery.setModulus(pirkQuery.getN().toString(Character.MAX_RADIX));
-        
+
         QuerySchema pirkSchema = QuerySchemaRegistry.get(queryInfo.getQueryType());
         io.swagger.model.QuerySchema swaggerSchema = new io.swagger.model.QuerySchema();
         swaggerQuery.setQuerySchema(swaggerSchema);
-        
+
         swaggerSchema.setName(pirkSchema.getSchemaName());
         swaggerSchema.setDataSchemaName(pirkSchema.getDataSchemaName());
         swaggerSchema.setPrimarySelector(pirkSchema.getSelectorName());
         swaggerSchema.setElementNames(pirkSchema.getElementNames());
         swaggerSchema.setFilter(pirkSchema.getFilterTypeName());
         swaggerSchema.setFilteredFields(new ArrayList<String>(pirkSchema.getFilteredElementNames()));
-       
+
         List<String> queryElements = pirkQuery.getQueryElements().values().stream()
-                .map(n -> n.toString(Character.MAX_RADIX))
-                .collect(Collectors.toList());
+                .map(n -> n.toString(Character.MAX_RADIX)).collect(Collectors.toList());
         swaggerQuery.setQueryElements(queryElements);
-  
+
         return swaggerQuery;
     }
-    
+
     private BigInteger parseBigInteger(String modulusString) {
         try {
             return new BigInteger(modulusString, Character.MAX_RADIX);

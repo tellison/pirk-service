@@ -17,21 +17,10 @@ public class QueryController {
 
     static QueryOperations handler = new QueryOperations();
 
-    // PUT /v1/queries/{id}
-    public static Response queriesIdPut(String id, io.swagger.model.Query query) {
-        logger.info("queriesIdPut");
-
-        if ((id == null) || !(id.equals(query.getId()))) {
-            return errorResponse("ID of URL does not match ID of payload", null);
-        }
-
-        try {
-            handler.storeQuery(query.getId(), query);
-        } catch (PIRException e) {
-            return errorResponse(e.getLocalizedMessage(), e);
-        }
-
-        return Response.ok(query.getId()).build();
+    // GET /v1/queries
+    public static Response queriesGet() {
+        logger.info("queriesGet");
+        return Response.ok(handler.storedQueryNames()).build();
     }
 
     // GET /v1/queries/{id}
@@ -48,6 +37,23 @@ public class QueryController {
         }
 
         return Response.ok(query).build();
+    }
+
+    // PUT /v1/queries/{id}
+    public static Response queriesIdPut(String id, io.swagger.model.Query query) {
+        logger.info("queriesIdPut");
+
+        if ((id == null) || !(id.equals(query.getId()))) {
+            return errorResponse("ID of URL does not match ID of payload", null);
+        }
+
+        try {
+            handler.storeQuery(query.getId(), query);
+        } catch (PIRException e) {
+            return errorResponse(e.getLocalizedMessage(), e);
+        }
+
+        return Response.ok(query.getId()).build();
     }
 
     private static Response errorResponse(String message, Exception e) {

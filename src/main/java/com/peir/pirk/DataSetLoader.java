@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.pirk.schema.data.DataSchemaLoader;
 import org.apache.pirk.schema.data.DataSchemaRegistry;
@@ -12,13 +15,16 @@ import org.apache.pirk.utils.PIRException;
 /*
  * Sample data for debugging and testing.
  */
-class Loader {
+class DataSetLoader {
 
-    public Loader() {
+    public DataSetLoader() {
+        loadDataSchemas();
     }
 
-    public void loadTestData() {
-        loadDataSchemas();
+    // Must return a copy, not the original.
+    public List<String> getDataSetNames() {
+        // Creates new each time
+        return new ArrayList<String>(Arrays.asList("example"));
     }
 
     private void loadDataSchemas() {
@@ -41,5 +47,14 @@ class Loader {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+    }
+
+    private void simpleDataSet() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ \"name\": \"Alice\", \"age\": \"31\", \"children\": [ \"Zack\", \"Yvette\" ] }\n");
+        sb.append("{ \"name\": \"Bob\",   \"age\": \"25\", \"children\": [ \"Xavier\", \"Wendy\" ] }\n");
+        sb.append("{ \"name\": \"Chris\", \"age\": \"43\", \"children\": [ \"Donna\" ] }\n");
+        sb.append("{ \"name\": \"Donna\", \"age\": \"19\", \"children\": [ ] }");
+        String json = sb.toString();
     }
 }

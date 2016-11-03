@@ -15,18 +15,20 @@ import io.swagger.model.DataSchemaElements;
  * Assumes all URL encoding/decoding has been done on inputs, and will be done on return values.
  * Throws exceptions to indicate errors, and lets caller map to response.
  */
-class DataSchemaOperations {
+class DataSetOperations {
 
-    private static final Logger logger = LoggerFactory.getLogger(DataSchemaOperations.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataSetOperations.class);
 
-    public DataSchemaOperations() {
-        // Default
+    private final DataSetLoader loader;
+    
+    public DataSetOperations(DataSetLoader loader) {
+        this.loader = loader;
     }
 
-    // Get all known data schema names as a sorted list.
-    public List<String> getDataSchemaNames() {
-        logger.debug("Getting sorted schema names");
-        List<String> list = new ArrayList<>(DataSchemaRegistry.getNames());
+    // Get all known data set names as a sorted list.
+    public List<String> getDataSetNames() {
+        logger.debug("Getting sorted data set names");
+        List<String> list = loader.getDataSetNames();
         Collections.sort(list);
         return list;
     }
