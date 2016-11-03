@@ -3,13 +3,13 @@
 1. Start by figuring out what data the server can provide us.
 
 Request:
-  GET /v1/data_schemas
+  GET /v1/data_sets
   
 Response:
   200 OK - and a possibly empty array of data schema names in body
 
 
-curl -i http://localhost:8080/v1/data_schemas
+curl -i http://localhost:8080/v1/data_sets
 
 [
   "Simple Data Schema 1"
