@@ -21,15 +21,21 @@ public class DataSetController {
 
     static DataSetOperations handler = new DataSetOperations(new DataSetLoader());
 
-    // GET /v1/data_schemas
-    public static Response dataSchemasGet() {
+    // GET /v1/data_sets
+    /*
+     * Returns a list of data sets available on this server.
+     */
+    public static Response dataSetsGet() {
         logger.info("dataSchemasGet");
         List<String> names = handler.getDataSetNames();
         return Response.ok(names).build();
     }
 
-    // GET /v1/data_schemas/{id}
-    public static Response dataSchemasIdGet(String id) throws NotFoundException {
+    // GET /v1/data_sets/{id}
+    /*
+     * Returns the schema for the given data set.
+     */
+    public static Response dataSetsIdSchemaGet(String id) throws NotFoundException {
         logger.info("dataSchemasIdGet id={}", id);
         // Decode request
         String schemaName = null;

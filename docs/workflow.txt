@@ -1,6 +1,6 @@
 == Workflow of REST API (pseudocode throughout) ==
 
-1. Start by figuring out what data the server can provide us.
+1. Start by figuring out what data sets the server will allow us to query.
 
 Request:
   GET /v1/data_sets
