@@ -1,32 +1,35 @@
 == Workflow of REST API (pseudocode throughout) ==
 
+
 1. Start by figuring out what data sets the server will allow us to query.
 
 Request:
   GET /v1/data_sets
   
 Response:
-  200 OK - and a possibly empty array of data schema names in body
+  200 OK - and a possibly empty array of data set names in body
 
 
 curl -i http://localhost:8080/v1/data_sets
 
 [
-  "Simple Data Schema 1"
+  "Simple Data Set 1"
 ]
+
 
 ==================
 
-2. Get a particular data schema
+
+2. Get details of a particular data set
 
 Request:
-  GET /v1/data_schemas/{name}
+  GET /v1/data_sets/{name}
   
-curl -i  http://localhost:8080/v1/data_schemas/Simple+Data+Schema+1
-curl http://localhost:8080/v1/data_schemas/Simple+Data+Schema+1 | python -m json.tool
+curl -i  http://localhost:8080/v1/data_schemas/Simple+Data+Set+1
+curl http://localhost:8080/v1/data_schemas/Simple+Data+Set+1 | python -m json.tool
 
 {
-  "name":"Simple Data Schema 1",
+  "name":"Simple Data Set 1",
   "elements": [
     {
       "name":"children",
@@ -45,20 +48,24 @@ curl http://localhost:8080/v1/data_schemas/Simple+Data+Schema+1 | python -m json
     }
   ]
 }
+
+
 ==================
 
 
 3. Next define a query over the data
 
 Request:
-  PUT /v1/queries/e0115ec3-9b0b-43d8-bb92-c9f66d1ea023
+  PUT /v1/queries/{id}
     
 Response:
   201 Created - and a URL to the query
   
 sh PUT.sh test_query.json http://localhost:8080/v1/queries/e0115ec3-9b0b-43d8-bb92-c9f66d1ea023
 
+
 ==================
+
 
 4. Retrieve a previously stored query
 
@@ -98,31 +105,5 @@ Response:
  ====
  
  editor.swagger.io
-         // QuerySchema qs = new QuerySchema();
-        // List<String> queryElements = new ArrayList<>();
-        // Query q = new Query();
-        //
-        // q.setId(id);
-        // q.setNumSelectors(2);
-        // q.setHashBitSize(12);
-        // q.setHashKey("Foobar");
-        // q.setNumBitsPerDataElement(96);
-        // q.setDataPartitionBitSize(8);
-        // q.setNumPartitionsPerDataElement(12);
-        // q.setModulus(
-        // "30049399560646469676005493659082752898785212655599017144565972358099446280042588990477674146012309524890531874672789");
-        // q.setQuerySchema(qs);
-        // q.setQueryElements(queryElements);
-        //
-        // qs.setDataSchemaName("simple query");
-        // qs.setDataSchemaName("Simple Data Schema 1");
-        // qs.setElementNames(Arrays.asList("name", "age"));
-        // qs.setFilter("com.example.Foo");
-        // qs.setFilteredFields(Arrays.asList("filtered_field"));
-        //
-        // queryElements.add(
-        // "191550723406084518591469029284995656590807890583952791477054646763013652531022594807624560411348538761707449665459721391970132574471789554192515615653292243752775621542596319777517406846487590458619682935632633366194785222228749954");
-        // queryElements.add(
-        // "708761260223492284214606189608835350828740716107713085191175122749726459266750635699507731862886370744878661635914854481831914893579356324072737130381958968722184499314288762113389523795210662995774011539282843855788464474546164091");
- 
+
  
