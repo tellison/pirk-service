@@ -18,7 +18,7 @@ import org.apache.pirk.utils.PIRException;
 class DataSetLoader {
 
     public DataSetLoader() {
-        loadDataSchemas();
+        loadDataSetSchemas();
     }
 
     // Must return a copy, not the original.
@@ -27,13 +27,13 @@ class DataSetLoader {
         return new ArrayList<String>(Arrays.asList("example"));
     }
 
-    private void loadDataSchemas() {
+    private void loadDataSetSchemas() {
         // Simple data schema #1
         StringBuilder sb = new StringBuilder();
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ");
         sb.append("<schema xmlns=\"http://pirk.apache.org\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
         sb.append("xsi:schemaLocation=\"http://pirk.apache.org data-schema.xsd\"> ");
-        sb.append("<schemaName>Simple Data Schema 1</schemaName> ");
+        sb.append("<schemaName>Simple Data Set 1</schemaName> ");
         sb.append("<element> <name>name</name> <type>string</type> </element> ");
         sb.append("<element> <name>age</name>  <type>int</type>    </element> ");
         sb.append("<element> <name>children</name>  <type>string</type>  <isArray/>  </element> ");
