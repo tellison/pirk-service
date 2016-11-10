@@ -5,8 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.pirk.schema.data.DataSchemaLoader;
 import org.apache.pirk.schema.data.DataSchemaRegistry;
@@ -17,14 +18,24 @@ import org.apache.pirk.utils.PIRException;
  */
 class DataSetLoader {
 
+    Map<String, String> dataSetToSchemas = new HashMap<>();
+
     public DataSetLoader() {
         loadDataSetSchemas();
+
+        // What is the schema for each data set?
+        dataSetToSchemas.put("First sample data set", "Simple Data Schema");
+        dataSetToSchemas.put("Second sample data set", "Simple Data Schema");
     }
 
     // Must return a copy, not the original.
-    public List<String> getDataSetNames() {
-        // Creates new each time
-        return new ArrayList<String>(Arrays.asList("example"));
+    List<String> getDataSetNames() {
+        return new ArrayList<String>(dataSetToSchemas.keySet());
+    }
+
+    // Returns null if not found
+    String getSchemaName(String dataSetName) {
+        return dataSetToSchemas.get(dataSetName);
     }
 
     private void loadDataSetSchemas() {
@@ -33,7 +44,7 @@ class DataSetLoader {
         sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\" ?> ");
         sb.append("<schema xmlns=\"http://pirk.apache.org\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
         sb.append("xsi:schemaLocation=\"http://pirk.apache.org data-schema.xsd\"> ");
-        sb.append("<schemaName>Simple Data Set 1</schemaName> ");
+        sb.append("<schemaName>Simple Data Schema</schemaName> ");
         sb.append("<element> <name>name</name> <type>string</type> </element> ");
         sb.append("<element> <name>age</name>  <type>int</type>    </element> ");
         sb.append("<element> <name>children</name>  <type>string</type>  <isArray/>  </element> ");

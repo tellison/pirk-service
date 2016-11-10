@@ -31,28 +31,36 @@ public class DataSetController {
         return Response.ok(names).build();
     }
 
-    // GET /v1/data_sets/{id}
+    // GET /v1/data_sets/{id}/schema
     /*
      * Returns the schema for the given data set.
      */
     public static Response dataSetsIdSchemaGet(String id) throws NotFoundException {
         logger.info("dataSchemasIdGet id={}", id);
         // Decode request
-        String schemaName = null;
+        String dataSetName = null;
         try {
-            schemaName = URLDecoder.decode(id, "UTF-8");
+            dataSetName = URLDecoder.decode(id, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             // UTF-8 is a required encoding type
         }
-        logger.debug("Decoded name : {}", schemaName);
+        logger.debug("Decoded data set name : {}", dataSetName);
 
+        // Find schema for this data set
+        String schemaName = handler.getSchemaName(dataSetName);
+        if (schemaName == null) {
+            logger.info("Schema not found for {}", dataSetName);
+            throw new NotFoundException(404, "Data set named " + dataSetName + " is not here");
+        }
+        logger.info("Schema for data set '{}' is '{}'", dataSetName, schemaName);
+        
         // Run request on model
         DataSchema schema = handler.getDataSchema(schemaName);
 
         // Compose appropriate response
         if (schema == null) {
-            logger.info("Schema not found : {}", schemaName);
-            throw new NotFoundException(404, "Schema named " + schemaName + " is not here");
+            logger.info("Schema not found : {}", dataSetName);
+            throw new NotFoundException(404, "Schema named " + dataSetName + " is not here");
         }
         return Response.ok(schema).build();
     }

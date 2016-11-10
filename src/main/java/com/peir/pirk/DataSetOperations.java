@@ -32,6 +32,12 @@ class DataSetOperations {
         Collections.sort(list);
         return list;
     }
+    
+    // Gets the schema name for a named data set
+    public String getSchemaName(String dataSetName) {
+        logger.debug("Getting schema name for data set " + dataSetName);
+        return loader.getSchemaName(dataSetName);
+    }
 
     /*
      * Gets a data schema with given id as a Swagger data schema. Returns null

@@ -23,10 +23,10 @@ curl -i http://localhost:8080/v1/data_sets
 2. Get details of a particular data set
 
 Request:
-  GET /v1/data_sets/{name}
+  GET /v1/data_sets/{name}/schema
   
-curl -i  http://localhost:8080/v1/data_schemas/Simple+Data+Set+1
-curl http://localhost:8080/v1/data_schemas/Simple+Data+Set+1 | python -m json.tool
+curl -i  http://localhost:8080/v1/data_sets/Second+sample+data+set/schema
+curl http://localhost:8080/v1/data_sets/Second+sample+data+set/schema | python -m json.tool
 
 {
   "name":"Simple Data Set 1",
