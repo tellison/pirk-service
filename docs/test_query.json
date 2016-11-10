@@ -8,7 +8,7 @@
     "numPartitionsPerDataElement": 12, 
     "modulus": "21qy2f4eo87vo7vhpchpkggxwz8ae4bmytmizwlaxzb7uyhhmsz0x2zcuntcpuuzmz7blb8nrth", 
     "querySchema": {
-        "dataSchemaName": "Simple Data Schema 1", 
+        "dataSchemaName": "Simple Data Schema", 
         "elementNames": [
             "name", 
             "age"

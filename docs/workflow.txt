@@ -54,6 +54,7 @@ curl http://localhost:8080/v1/data_sets/Second+sample+data+set/schema | python -
 
 
 3. Next define a query over the data
+{The server should assign the id, but we have an id for our decrypter too...}
 
 Request:
   PUT /v1/queries/{id}
@@ -61,6 +62,8 @@ Request:
 Response:
   201 Created - and a URL to the query
   
+cd ~/eclipse/workspace-neon/pirk-service/docs/
+
 sh PUT.sh test_query.json http://localhost:8080/v1/queries/e0115ec3-9b0b-43d8-bb92-c9f66d1ea023
 
 
